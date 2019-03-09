@@ -1,0 +1,26 @@
+{
+  "name": "nanti",
+  "version": "0.1.0",
+  "description": "Dapp for collateralized scalable debt",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cryptotuxorg/nanti.git"
+  },
+  "author": "@xalava @kurthalex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cryptotuxorg/nanti/issues"
+  },
+  "homepage": "https://github.com/cryptotuxorg/nanti#readme",
+  "dependencies": {
+    "ethereum-waffle": "^2.0.7",
+    "openzeppelin-solidity": "^2.1.3"
+  }
+}
