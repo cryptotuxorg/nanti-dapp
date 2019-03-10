@@ -10,3 +10,5 @@ At any moment he can attempt to close the channel by paying to the contract this
 - Collect the amount paid and release his claim on the bond
 - Contest the amount with a higher proof, and collect amount paid and become owner of the bond
 
+![screenshot](screenshot.png)
+![screenshot](pay.png)

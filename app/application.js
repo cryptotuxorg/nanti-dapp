@@ -27,9 +27,11 @@ async function connectMetamask() {
     } else {
       contractAddr = skaleAddress
     }
+    user.signer = provider.getSigner(user.address);
+
 	  let bondContract=new ethers.Contract(contractAddr, bondABI, provider)
-    let bondContractSigned=bondContract.connect(provider.getSigner(user.address))
-    user.isOwner = await bondContract.isOwner()
+    let bondContractSigned=bondContract.connect(user.signer)
+    user.isOwner = true//await bondContract.isOwner()
     let currentBalances = []
     dapp = { provider, bondContract, bondContractSigned, net,currentBalances}
 
@@ -53,7 +55,7 @@ function  refreshData() {
   document.getElementById("statut").innerHTML = " <span class='badge badge-secondary'> " + user.address +" </span>"
   jdenticon.update("#id-image", user.address)
   document.getElementById("date").innerHTML = `<sub>Timestamp: <span class="badge badge-primary">${new Date().getTime()}</sub>`
-  document.getElementById("network-id").innerHTML = `Network: <span class="text-warning">${ dapp.network.chainId}</span> \" ${ dapp.network.name} \ "`
+  document.getElementById("network-id").innerHTML = `Network: <span class="text-warning">${ dapp.net.chainId}</span> \" ${ dapp.net.name} \ "`
 
 
 
@@ -104,13 +106,13 @@ async function loadBonds() {
         if(bond.counterparty==0) {
           templateBond+= `<button onclick="collateralize(${i})" class="btn btn-primary">Collateralize</button>
           <div class="form-group ">
-            <input type="text" class="form-control-plaintext text-primary" id="incounterpart" style="border: solid;" value="0xe58d14aeb24449bccc897206eea6272f6f154a3">
+            <input type="text" class="form-control-plaintext text-primary" id="incounterpart" style="border: solid;" value="0x992152BF1F24f2d3E29f707c660D81c00dd28579">
           </div>
           `
         }else {
-          templateBond+=`<span class="badge badge-secondary">${bond.counterparty}</span>
+          templateBond+=`<span class="badge badge-secondary">${bond.counterparty}</span><br>
           <button onclick="pay(${i},1)" class="btn btn-success">Pay $1</button>
-          <span class="badge badge-secondary">${bond.counterparty}</span>
+          <button onclick="pay(${i},5)" class="btn btn-success">Pay $5</button>
           <button onclick="pay(${i},100)" class="btn btn-success">Pay $100</button>
           `
         }
@@ -123,14 +125,28 @@ async function loadBonds() {
 }
 
 async function collateralize(indice) {
-  let counterpart = document.getElementById("incounterpart").value
+  let counterpart = document.getElementById("incounterpart").value.toString()
+  // ethers.utils.getAddress(counterpart)
   await  dapp.bondContractSigned.collateralize(indice,counterpart)
 }
 
 async function pay(indice,amount) {
-  dapp.currentBalances[indice] += amount
+  if (dapp.currentBalances[indice]) {
+    dapp.currentBalances[indice] += amount
+  } else {
+    dapp.currentBalances[indice] = amount
+  }
   knownDebt = dapp.currentBalances[indice]
-  document.getElementById("msg").innerHTML = knownDebt
+
+  let msg = await dapp.bondContract.makeMessage(indice,knownDebt)
+  // var buf = Buffer.from(msg, 'utf8');
+  // let msgarray = ethers.utils.arrayify(buf)
+  let signature = await user.signer.signMessage(msg);
+  document.getElementById("msg").innerHTML = `<p>Indice : ${indice}, Amount : ${knownDebt}</p>
+  <h5>Message:</h5> 
+  <div class="border border-success p-3"> ${msg}</div>
+  <br>
+  <h5>Signature: </h5> <div class="border border-success p-3">${signature}<div>`
   $('#payModal').modal({
     keyboard: false
   })
