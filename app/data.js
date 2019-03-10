@@ -1,5 +1,5 @@
 let privateQuorumAddress = "0x7179e4822d71b7843c336bf7c19e12c73ac6d5a0";
-let skaleAddress = "0xf5bc576460e3f8b89a7364b2d64ce3e9a90c39aa";
+let skaleAddress = "0xa0d04136d11402292a0b4640d90cf6932bb85858";
 let bondABI =   [
   {
     "constant": false,
