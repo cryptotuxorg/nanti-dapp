@@ -1,6 +1,6 @@
-# Nanti
+# Nanti 
 
-Nanti is a dapp allowing to issue DApp on an Ethereum compatible network, and to use them as collateral for instant payment channels.
+Nanti is a dapp allowing to issue corporate bonds on an Ethereum compatible network, and to use them as collateral for instant payment channels.
 
 The contract is meant to be deployed by a corporate entity that want to issue and sell bonds. It aims to be compatible with relevant standards (ERC1400 & ss.), allowing issuance and redemption.
 

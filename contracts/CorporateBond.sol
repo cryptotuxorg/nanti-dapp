@@ -2,6 +2,10 @@ pragma solidity  >=0.5.0 <0.6.0;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
+contract LiborData {
+  uint256 liborRate;
+}
+
 contract CorporateBond is Ownable {
   using ECDSA for bytes32;
   
@@ -14,20 +18,21 @@ contract CorporateBond is Ownable {
     uint lastKnownAmount;
     uint endClosingTime;
   }
-  // mapping (address => mapping (address => uint)) outstandingCredit;
 
   Bond[] public bonds;
   uint nbBonds;
+  uint currentLIBOR = 2.4; // default value
+  address liborDataContract;
 
   event Issued( uint _principal,uint _maturity, uint _rate);
   event Redeemed(uint indice);
 
-  constructor() public {
+  constructor(address _liborDataContract) public {
+    liborDataContract = _liborDataContract;
   }
 
   function calculateDebt(uint amount,uint rate) public pure returns (uint){
-    //TODO call for libor
-    return amount* (1+rate);
+    return amount* (100+currentLIBOR+rate/100)/100;
   }
 
   function makeMessage(uint ind,uint lastAmount) public pure returns (bytes32){
@@ -105,5 +110,5 @@ contract CorporateBond is Ownable {
     require(bond.owner == msg.sender);
     require(now>bond.endClosingTime);
     bond.counterparty=address(0);
-  }
+  } 
 }
