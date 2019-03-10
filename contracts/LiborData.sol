@@ -768,7 +768,7 @@ contract LiborData is Chainlinked, Ownable {
   uint256 constant private ORACLE_PAYMENT = 1 * LINK; // solium-disable-line zeppelin/no-arithmetic-operations
 
   uint256 public currentPrice;
-  uint256 public liborRate;
+  uint256 public liborRate;// in bips
 
   int256 public changeDay;
   bytes32 public lastMarket;
@@ -839,15 +839,15 @@ contract LiborData is Chainlinked, Ownable {
     chainlinkRequest(req, ORACLE_PAYMENT);
   }
 
-  function requestLIBOR() public {
+  function requestLIBOR(string _jobId) public {
     Chainlink.Request memory req = newRequest(stringToBytes32(_jobId), this, this.fulfill.selector);
     req.add("url", "https://api.myjson.com/bins/tl3sq");
     chainlinkRequest(req, ORACLE_PAYMENT);
   }
 
   // fulfill receives a uint256 data type
-  function fulfill(bytes32 _requestId, uint256 _price) public checkChainlinkFulfillment(_requestId){
-    currentLibor = _price;
+  function fulfill(bytes32 _requestId, uint256 _price) public recordChainlinkFulfillment(_requestId){
+    liborRate = _price;
   }
 
   function fulfillEthereumPrice(bytes32 _requestId, uint256 _price)

@@ -3,7 +3,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 contract LiborData {
-  uint256 liborRate;
+  function getLIBOR() public returns (uint256);
 }
 
 contract CorporateBond is Ownable {
@@ -21,18 +21,19 @@ contract CorporateBond is Ownable {
 
   Bond[] public bonds;
   uint nbBonds;
-  uint currentLIBOR = 2.4; // default value
-  address liborDataContract;
+
+   LiborData liborDataContract = LiborData(0x7B995813B0086fDa8253E1B3c0f23456e773CBf3);
 
   event Issued( uint _principal,uint _maturity, uint _rate);
   event Redeemed(uint indice);
 
-  constructor(address _liborDataContract) public {
-    liborDataContract = _liborDataContract;
+  constructor() public {
+    
   }
 
-  function calculateDebt(uint amount,uint rate) public pure returns (uint){
-    return amount* (100+currentLIBOR+rate/100)/100;
+  function calculateDebt(uint amount,uint rate) public  returns (uint){
+    uint currentLIBOR = liborDataContract.getLIBOR();
+    return amount* (10000+currentLIBOR+rate)/10000;
   }
 
   function makeMessage(uint ind,uint lastAmount) public pure returns (bytes32){
