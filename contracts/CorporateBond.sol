@@ -20,7 +20,7 @@ contract CorporateBond is Ownable {
   }
 
   Bond[] public bonds;
-  uint nbBonds;
+  uint public nbBonds;
 
    LiborData liborDataContract = LiborData(0x7B995813B0086fDa8253E1B3c0f23456e773CBf3);
 
