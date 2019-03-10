@@ -795,6 +795,10 @@ contract LiborData is Chainlinked, Ownable {
     setChainlinkWithENS(ROPSTEN_ENS, ROPSTEN_CHAINLINK_ENS);
   }
 
+  function getLIBOR() public view returns (uint) {
+    return liborRate;
+  }
+
   function requestEthereumPrice(string _jobId, string _currency) 
     public
     onlyOwner
